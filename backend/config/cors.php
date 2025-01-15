@@ -4,7 +4,7 @@ return [
 
     'paths' => ['api/*', 'test'], // Add the routes you want to enable CORS for
     'allowed_methods' => ['*'],  // Allow all methods (GET, POST, etc.)
-    'allowed_origins' => ['http://localhost:8081'], // Add your frontend's origin
+    'allowed_origins' => ['http://localhost:8081',"*"], // Add your frontend's origin
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],  // Allow all headers
     'exposed_headers' => [],

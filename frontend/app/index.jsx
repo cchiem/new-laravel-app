@@ -1,8 +1,6 @@
 import { View, Text, ActivityIndicator, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import Post from "@/components/Post"; // Assuming you have the Post component
-import { rem } from "nativewind"; // If you plan to use rem for styling
-import * as ImagePicker from "expo-image-picker";
 import api from "./api";
 
 const Index = () => {
@@ -14,7 +12,6 @@ const Index = () => {
         setLoading(true); // Start loading
         try {
             const res = await api.get("/api/posts");
-            console.log(res);
             setPosts(res.data); // Assuming response has data
         } catch (error) {
             console.log(error);
@@ -26,8 +23,7 @@ const Index = () => {
     // Remove a post
     async function removePost(id) {
         try {
-            const res = await api.delete(`/api/posts/${id}`); // Correctly format URL with dynamic ID
-            console.log(res);
+            await api.delete(`/api/posts/${id}`); // Correctly format URL with dynamic ID
             fetch(); // Refresh posts after deletion
         } catch (error) {
             console.log(error);
@@ -45,24 +41,29 @@ const Index = () => {
     };
 
     return (
-        <ScrollView className="flex-1 justify-center items-center p-4">
-            {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" /> // Show a blue spinner while loading
-            ) : posts.length > 0 ? (
-                posts.map((post) => (
-                    <Post
-                        key={post.id}
-                        post={post}
-                        onEdit={handleEdit}
-                        onDelete={removePost}
-                    />
-                ))
-            ) : (
-                <Text className="text-center font-bold text-3xl text-gray-400">
-                    NO POSTS HERE
-                </Text>
-            )}
-        </ScrollView>
+        <>
+            <Text className="text-5xl font-bold text-center bg-gray-100 py-4 ">
+                Post List
+            </Text>
+            <ScrollView className="flex-1 bg-gray-100 p-4">
+                {loading ? (
+                    <ActivityIndicator size="large" color="#0000ff" /> // Show a blue spinner while loading
+                ) : posts.length > 0 ? (
+                    posts.map((post) => (
+                        <Post
+                            key={post.id}
+                            post={post}
+                            onEdit={handleEdit}
+                            onDelete={removePost}
+                        />
+                    ))
+                ) : (
+                    <Text className="text-center font-bold text-3xl text-gray-400 py-10">
+                        NO POSTS HERE
+                    </Text>
+                )}
+            </ScrollView>
+        </>
     );
 };
 
