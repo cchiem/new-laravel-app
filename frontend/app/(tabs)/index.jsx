@@ -1,20 +1,25 @@
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import api from "../api"; // Import the correct instance
 import Post from "@/components/Post"; // Assuming you have the Post component
 import { rem } from "nativewind"; // If you plan to use rem for styling
+import * as ImagePicker from "expo-image-picker";
 
 const Index = () => {
     const [posts, setPosts] = useState([]); // Initialize as empty array
+    const [loading, setLoading] = useState(true); // State to handle loading state
 
     // Fetch posts from API
     async function fetch() {
+        setLoading(true); // Start loading
         try {
             const res = await api.get("/api/posts");
             console.log(res);
             setPosts(res.data); // Assuming response has data
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false); // Stop loading once data is fetched
         }
     }
 
@@ -40,8 +45,10 @@ const Index = () => {
     };
 
     return (
-        <View className="p-4">
-            {posts.length > 0 ? (
+        <View className="flex-1 justify-center items-center p-4 ">
+            {loading ? (
+                <ActivityIndicator size="large" color="#0000ff" /> // Show a blue spinner while loading
+            ) : posts.length > 0 ? (
                 posts.map((post) => (
                     <Post
                         key={post.id}

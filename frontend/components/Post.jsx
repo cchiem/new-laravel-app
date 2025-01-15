@@ -3,7 +3,7 @@ import { View, Text, Image, Button } from "react-native";
 
 const Post = ({ post, onEdit, onDelete }) => {
     return (
-        <View className="p-4 mb-5 border rounded-lg border-gray-300 bg-white">
+        <View className="p-4 mb-5 border rounded-lg border-gray-300 bg-white w-full">
             <Text className="text-xl font-bold">{post.title}</Text>
             {post.photo && (
                 <Image
