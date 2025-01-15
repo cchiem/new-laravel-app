@@ -1,9 +1,9 @@
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import api from "../api"; // Import the correct instance
 import Post from "@/components/Post"; // Assuming you have the Post component
 import { rem } from "nativewind"; // If you plan to use rem for styling
 import * as ImagePicker from "expo-image-picker";
+import api from "./api";
 
 const Index = () => {
     const [posts, setPosts] = useState([]); // Initialize as empty array
@@ -45,7 +45,7 @@ const Index = () => {
     };
 
     return (
-        <View className="flex-1 justify-center items-center p-4 ">
+        <ScrollView className="flex-1 justify-center items-center p-4">
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" /> // Show a blue spinner while loading
             ) : posts.length > 0 ? (
@@ -62,7 +62,7 @@ const Index = () => {
                     NO POSTS HERE
                 </Text>
             )}
-        </View>
+        </ScrollView>
     );
 };
 

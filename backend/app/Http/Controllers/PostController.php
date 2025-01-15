@@ -19,7 +19,6 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Ensure the image is correctly validated
         ]);
         
         // Handle image upload if present
@@ -44,13 +43,8 @@ class PostController extends Controller
         return $post;
     }
 
-    // Delete post
+    // Delete post     public function destroy(Post $post) {
     public function destroy(Post $post) {
-        // Delete the image if it exists in storage
-        if ($post->photo && Storage::exists('public/' . $post->photo)) {
-            Storage::delete('public/' . $post->photo);
-        }
-        
         $post->delete();
         return response()->noContent();
     }

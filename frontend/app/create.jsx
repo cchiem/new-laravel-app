@@ -1,70 +1,33 @@
 import { View, Text, TextInput, Button, Image } from "react-native";
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import api from "../api"; // Import the correct instance for API
+import api from "./api"; // Import the correct instance for API
 
 const CreatePost = () => {
     const [title, setTitle] = useState(""); // State for post title
     const [content, setContent] = useState(""); // State for post content
     const [image, setImage] = useState(null); // State for the selected image
-    const navigation = useNavigation(); // Get navigation object
-
-    // Request permission to access the camera or gallery
-    const pickImage = async () => {
-        let permissionResult =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
-            alert("Permission to access the camera roll is required!");
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri); // Store the image URI in state
-        } else {
-            alert("No image selected.");
-        }
-    };
 
     // Function to handle post creation
     const handleCreatePost = async () => {
-        if (!title || !content || !image) {
+        if (!title || !content) {
             alert("Please fill in all fields and select an image.");
             return;
         }
 
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("content", content);
-
-        // Check the file extension and set MIME type dynamically
-        const fileExtension = image.split(".").pop(); // Get file extension
-        const mimeType =
-            fileExtension === "jpg" || fileExtension === "jpeg"
-                ? "image/jpeg"
-                : "image/png"; // Adjust MIME type
-
-        formData.append("photo", {
-            uri: image,
-            type: mimeType, // Dynamically set MIME type
-            name: `post-image.${fileExtension}`, // Set image name
-        });
-
         try {
-            const response = await api.post("/api/posts", formData); // Send FormData
+            const response = await api.post("/api/posts", {
+                title,
+                content,
+                image,
+            }); // Send FormData
             if (response.status === 201) {
                 alert("Post created successfully!");
                 setTitle("");
                 setContent("");
                 setImage(null); // Reset image after post creation
-                navigation.goBack(); // Go to the root screen and refresh it
+                router.push("/");
             } else {
                 throw new Error("Failed to create post.");
             }
@@ -101,11 +64,7 @@ const CreatePost = () => {
             />
 
             {/* Button to pick an image */}
-            <Button
-                title="Pick an Image"
-                onPress={pickImage}
-                className="w-full p-4"
-            />
+            <Button title="Pick an Image" className="w-full p-4" />
             <Button title="Create Post" onPress={handleCreatePost} />
         </View>
     );
