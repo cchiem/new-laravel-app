@@ -14,50 +14,49 @@ class PostController extends Controller
     {
         return Post::all();
     }
-
     public function store(Request $request)
     {
-        Log::info('Received request data:', $request->all());
-        Log::info('Files in request:', $request->allFiles());
-    
-        $request->validate([
+        // Validate the request data
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'image' => 'required|file|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
         try {
+            // Initialize imagePath to null
             $imagePath = null;
+    
+            // Handle the image upload if provided
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                Log::info('Image details:', [
-                    'original_name' => $image->getClientOriginalName(),
-                    'mime_type' => $image->getMimeType(),
-                    'size' => $image->getSize(),
-                ]);
     
+                // Generate a unique filename and store the image
                 $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storeAs('posts', $filename, 'public');
             }
     
+            // Create the new post with or without the image
             $post = Post::create([
-                'title' => $request->input('title'),
-                'content' => $request->input('content'),
+                'title' => $validated['title'],
+                'content' => $validated['content'],
                 'photo' => $imagePath ? Storage::url($imagePath) : null,
             ]);
     
+            // Return success response
             return response()->json([
                 'message' => 'Post created successfully',
                 'post' => $post,
             ], 201);
         } catch (\Exception $e) {
-            Log::error('Post creation error: ' . $e->getMessage());
+            // Return error response
             return response()->json([
                 'message' => 'Failed to create post',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
     public function show(Post $post)
     {
         return $post;

@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
-    use HasFactory; // Capitalize HasFactory
+    use HasFactory; 
     
-    protected $table = 'posts'; // You can specify the table name if it's not the default (plural form of the model name)
+    protected $table = 'posts';
     
     // Add the fillable property to prevent mass-assignment errors
     protected $fillable = ['title', 'content', 'photo'];

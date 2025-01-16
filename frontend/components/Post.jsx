@@ -1,32 +1,71 @@
 import React from "react";
-import { View, Text, Image, Button } from "react-native";
+import { View, Text, Image, Button, TouchableOpacity } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons
 
 const Post = ({ post, onEdit, onDelete }) => {
     // Assuming the image is being served from localhost at port 8000
     const imageUri = `http://localhost:8000${post.photo}`;
 
     return (
-        <View className="border rounded-lg border-gray-300 bg-white w-full p-4">
-            <Text className="text-2xl font-bold">{post.title}</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>{post.title}</Text>
             {post.photo && (
-                <Image
-                    source={{ uri: imageUri }}
-                    style={{ width: 200, height: 200, marginVertical: 10 }}
-                    className="w-full h-48 mt-2 mb-3 rounded-lg"
-                />
+                <Image source={{ uri: imageUri }} style={styles.image} />
             )}
-            <Text className="text-base mb-3 text-gray-600">{post.content}</Text>
+            <Text style={styles.content}>{post.content}</Text>
 
-            <View className="flex-row gap-7">
+            <View style={styles.buttonContainer}>
                 <Button title="Edit" onPress={() => onEdit(post.id)} />
-                <Button
-                    title="Delete"
-                    onPress={() => onDelete(post.id)}
-                    color="red"
-                />
             </View>
+
+            {/* Delete Icon (X) in the top right corner */}
+            <TouchableOpacity
+                onPress={() => onDelete(post.id)}
+                style={styles.deleteButton}
+            >
+                <Ionicons name="close-circle" size={30} color="red" />{" "}
+                {/* "X" icon */}
+            </TouchableOpacity>
         </View>
     );
+};
+
+const styles = {
+    container: {
+        borderWidth: 1,
+        borderColor: "#d1d5db", // gray-300
+        borderRadius: 8,
+        backgroundColor: "white",
+        width: "100%",
+        padding: 16,
+        position: "relative", // To position the delete icon absolutely
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+    },
+    image: {
+        width: "100%", // Make the image full width
+        height: undefined, // Automatically adjust the height
+        aspectRatio: 1, // Maintain aspect ratio (you can adjust this if needed)
+        marginVertical: 10,
+    },
+    content: {
+        fontSize: 16,
+        marginBottom: 12,
+        color: "#4b5563", // gray-600
+    },
+    buttonContainer: {
+        flexDirection: "row",
+        gap: 28, // gap-7
+    },
+    deleteButton: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+        backgroundColor: "transparent",
+        padding: 5,
+    },
 };
 
 export default Post;
