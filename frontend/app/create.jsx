@@ -7,11 +7,21 @@ import {
     Image,
     Platform,
     Alert,
+    StyleSheet,
 } from "react-native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import api from "./api"; // Adjust this import path as necessary
+
+const imgDir = FileSystem.documentDirectory + "images/";
+
+const ensureDirExists = async () => {
+    const dirInfo = await FileSystem.getInfoAsync(imgDir);
+    if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(imgDir, { intermediates: true });
+    }
+};
 
 const CreatePost = () => {
     const [title, setTitle] = useState("");
@@ -19,69 +29,52 @@ const CreatePost = () => {
     const [image, setImage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleImagePick = async () => {
-        const permissionResult =
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const selectImage = async (useLibrary) => {
+        try {
+            const permissionResult = await (useLibrary
+                ? ImagePicker.requestMediaLibraryPermissionsAsync()
+                : ImagePicker.requestCameraPermissionsAsync());
 
-        if (!permissionResult.granted) {
-            Alert.alert(
-                "Permission Required",
-                "Permission to access camera roll is required!"
-            );
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            try {
-                const localUri = await saveImageToLocalStorage(
-                    result.assets[0].uri
-                );
-                setImage({ uri: localUri, type: "image/jpeg" });
-            } catch (error) {
-                console.error("Error saving image to gallery:", error);
+            if (!permissionResult.granted) {
                 Alert.alert(
-                    "Error",
-                    "Failed to save the image to the gallery."
+                    "Permission Denied",
+                    "Permission is required to access images."
                 );
+                return;
             }
+
+            const result = useLibrary
+                ? await ImagePicker.launchImageLibraryAsync({
+                      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                      allowsEditing: true,
+                      aspect: [4, 4],
+                      quality: 0.75,
+                  })
+                : await ImagePicker.launchCameraAsync({
+                      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                      allowsEditing: true,
+                      aspect: [4, 4],
+                      quality: 0.75,
+                  });
+
+            if (!result.canceled) {
+                const uri = result.assets[0].uri;
+                await saveImage(uri);
+                setImage({ uri });
+            }
+        } catch (error) {
+            console.error("Error selecting image:", error);
         }
     };
 
-    const saveImageToLocalStorage = async (uri) => {
-        if (!uri) {
-            console.error("Image URI is undefined.");
-            return null;
-        }
-
-        if (Platform.OS !== "web") {
-            try {
-                const filename = uri.split("/").pop();
-                const newPath = `${FileSystem.documentDirectory}Pictures/${filename}`;
-
-                // Ensure the Pictures directory exists
-                await FileSystem.makeDirectoryAsync(
-                    `${FileSystem.documentDirectory}Pictures`,
-                    {
-                        intermediates: true,
-                    }
-                );
-
-                await FileSystem.copyAsync({ from: uri, to: newPath });
-                return newPath;
-            } catch (error) {
-                console.error("Error saving image to local storage:", error);
-                throw error;
-            }
-        } else {
-            console.warn("Local file saving is not supported on the web.");
-            return uri; // For web, return the URI as is
+    const saveImage = async (uri) => {
+        try {
+            await ensureDirExists();
+            const filename = new Date().getTime() + ".jpeg";
+            const dest = imgDir + filename;
+            await FileSystem.copyAsync({ from: uri, to: dest });
+        } catch (error) {
+            console.error("Error saving image:", error);
         }
     };
 
@@ -106,10 +99,9 @@ const CreatePost = () => {
                 const blob = await response.blob();
                 formData.append("image", blob, "image.jpg");
             } else {
-                const imageUri = image.uri.replace("file://", "");
                 formData.append("image", {
-                    uri: imageUri,
-                    type: image.type,
+                    uri: image.uri,
+                    type: "image/jpeg",
                     name: "image.jpg",
                 });
             }
@@ -127,6 +119,7 @@ const CreatePost = () => {
             setImage(null);
             router.push("/");
         } catch (error) {
+            console.error("Error creating post:", error);
             Alert.alert("Error", "An error occurred while creating the post.");
         } finally {
             setIsLoading(false);
@@ -152,7 +145,11 @@ const CreatePost = () => {
                 onChangeText={setContent}
                 multiline
             />
-            <Button title="Pick an Image" onPress={handleImagePick} />
+            <Button
+                title="Pick an Image from Library"
+                onPress={() => selectImage(true)}
+            />
+            <Button title="Take a Photo" onPress={() => selectImage(false)} />
             <Button
                 title="Create Post"
                 onPress={handleCreatePost}
@@ -163,7 +160,7 @@ const CreatePost = () => {
     );
 };
 
-const styles = {
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
@@ -202,6 +199,6 @@ const styles = {
         height: 120,
         textAlignVertical: "top",
     },
-};
+});
 
 export default CreatePost;

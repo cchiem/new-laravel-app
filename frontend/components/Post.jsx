@@ -4,7 +4,7 @@ import Ionicons from "react-native-vector-icons/Ionicons"; // Import Ionicons
 
 const Post = ({ post, onEdit, onDelete }) => {
     // Assuming the image is being served from localhost at port 8000
-    const imageUri = `http://localhost:8000${post.photo}`;
+    const imageUri = `http://10.0.2.2:8000${post.photo}`;
 
     return (
         <View style={styles.container}>
