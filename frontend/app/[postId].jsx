@@ -21,7 +21,7 @@ const EditPost = () => {
     const [image, setImage] = useState(null);
 
     useEffect(() => {
-        console.log("Fetching post with ID:", postId);
+        console.log("Fetching post with ID to Edit:", postId);
         const fetchPost = async () => {
             try {
                 const response = await api.get(

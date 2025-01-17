@@ -5,22 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4eed4a5-9be2-486e-a05e-dd881f7418a7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/PostController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/PostController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app/Http/Cors.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/bootstrap/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/bootstrap/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/_layout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/_layout.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/api.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/[postId].jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/[postId].jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/app/create.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/create.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/edit.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/index.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/babel.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/babel.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Post.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Post.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -69,6 +69,7 @@ const CreatePost = () => {
 
     const saveImage = async (uri, fileName) => {
         try {
+            console.log(fileName);
             await ensureDirExists();
             const dest = imgDir + fileName;
             await FileSystem.copyAsync({ from: uri, to: dest });
@@ -142,7 +143,6 @@ const CreatePost = () => {
                     )}
                 </TouchableOpacity>
 
-                {/* Camera button below the placeholder image */}
                 <TouchableOpacity
                     onPress={() => selectImage(false)} // Trigger the camera
                     className="bg-blue-500 py-2 px-4 rounded-md mb-4"

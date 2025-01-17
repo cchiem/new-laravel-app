@@ -31,13 +31,11 @@ class PostController extends Controller
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 
-                // Generate a unique name for the file
-                $uniqueId = Str::uuid();
-                $extension = $image->getClientOriginalExtension();
-                $filename = $uniqueId . '.' . $extension;
-
+                // Use the original name of the file
+                $originalName = $image->getClientOriginalName();
+    
                 // Store the image in the 'posts' directory
-                $imagePath = $image->storeAs('posts', $filename, 'public');
+                $imagePath = $image->storeAs('posts', $originalName, 'public');
             }
     
             // Create the new post with or without the image
@@ -60,15 +58,14 @@ class PostController extends Controller
         }
     }
     
+    
     public function update($id)
     {
         // Find the post by ID or fail if not found
         $post = Post::findOrFail($id);
         $post->title = request('title');
         $post->content = request('content');
-
         $post->save();
-
         return response()->json($post);
     }
 
