@@ -30,9 +30,13 @@ class PostController extends Controller
             // Handle the image upload if provided
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-    
-                // Generate a unique filename and store the image
-                $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
+                
+                // Generate a unique name for the file
+                $uniqueId = Str::uuid();
+                $extension = $image->getClientOriginalExtension();
+                $filename = $uniqueId . '.' . $extension;
+
+                // Store the image in the 'posts' directory
                 $imagePath = $image->storeAs('posts', $filename, 'public');
             }
     
@@ -49,17 +53,37 @@ class PostController extends Controller
                 'post' => $post,
             ], 201);
         } catch (\Exception $e) {
-            // Return error response
             return response()->json([
                 'message' => 'Failed to create post',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
-
-    public function show(Post $post)
+    
+    public function update($id)
     {
-        return $post;
+        // Find the post by ID or fail if not found
+        $post = Post::findOrFail($id);
+        $post->title = request('title');
+        $post->content = request('content');
+
+        $post->save();
+
+        return response()->json($post);
+    }
+
+    public function show($postid)
+    {
+        // Find the post by ID
+        $post = Post::find($postid);
+
+        // If the post is not found, return a 404 response
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        // Return the post data (you can customize this depending on the response format you need)
+        return response()->json($post);
     }
 
     public function destroy(Post $post)

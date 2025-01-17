@@ -7,14 +7,18 @@ export default function Layout() {
     return (
         <View className="flex-1 bg-gray-100">
             {/* Stack Navigator */}
-            <Stack>
+            <Stack
+                options={{
+                    headerLeft: () => null, // This removes the back button in the header
+                }} // Disable back button on this screen
+            >
                 <Stack.Screen name="index" options={{ title: "Home" }} />
                 <Stack.Screen name="create" options={{ title: "Create" }} />
                 <Stack.Screen name="edit" options={{ title: "Edit" }} />
             </Stack>
 
             {/* Modern Navigation Bar */}
-            <View className="flex-row justify-around items-center h-16 bg-blue-600">
+            <View className="flex-row justify-around items-center p-4 bg-[#0000ff]">
                 <NavButton
                     label="Home"
                     route="/"
@@ -30,11 +34,6 @@ export default function Layout() {
                             color="white"
                         />
                     }
-                />
-                <NavButton
-                    label="Edit"
-                    route="edit"
-                    icon={<Ionicons name="create" size={24} color="white" />}
                 />
             </View>
         </View>

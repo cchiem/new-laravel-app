@@ -3,11 +3,10 @@ import {
     View,
     Text,
     TextInput,
-    Button,
     Image,
-    Platform,
     Alert,
-    StyleSheet,
+    ScrollView,
+    TouchableOpacity,
 } from "react-native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
@@ -59,19 +58,19 @@ const CreatePost = () => {
 
             if (!result.canceled) {
                 const uri = result.assets[0].uri;
-                await saveImage(uri);
-                setImage({ uri });
+                const fileName = uri.split("/").pop();
+                await saveImage(uri, fileName);
+                setImage({ uri, fileName });
             }
         } catch (error) {
             console.error("Error selecting image:", error);
         }
     };
 
-    const saveImage = async (uri) => {
+    const saveImage = async (uri, fileName) => {
         try {
             await ensureDirExists();
-            const filename = new Date().getTime() + ".jpeg";
-            const dest = imgDir + filename;
+            const dest = imgDir + fileName;
             await FileSystem.copyAsync({ from: uri, to: dest });
         } catch (error) {
             console.error("Error saving image:", error);
@@ -94,30 +93,22 @@ const CreatePost = () => {
             formData.append("title", title);
             formData.append("content", content);
 
-            if (Platform.OS === "web") {
-                const response = await fetch(image.uri);
-                const blob = await response.blob();
-                formData.append("image", blob, "image.jpg");
-            } else {
-                formData.append("image", {
-                    uri: image.uri,
-                    type: "image/jpeg",
-                    name: "image.jpg",
-                });
-            }
-
-            const response = await api.post("/api/posts", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Accept: "application/json",
-                },
+            formData.append("image", {
+                uri: image.uri,
+                type: "image/jpeg",
+                name: image.fileName,
             });
+
+            const response = await api.post(
+                "http://10.0.2.2:8000/api/posts",
+                formData
+            );
 
             Alert.alert("Success", "Post created successfully!");
             setTitle("");
             setContent("");
             setImage(null);
-            router.push("/");
+            router.push("/?refresh=true"); // Redirect to the home page with a refresh query
         } catch (error) {
             console.error("Error creating post:", error);
             Alert.alert("Error", "An error occurred while creating the post.");
@@ -127,78 +118,75 @@ const CreatePost = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Create New Post</Text>
-            {image && (
-                <Image source={{ uri: image.uri }} style={styles.image} />
-            )}
-            <TextInput
-                style={styles.input}
-                placeholder="Post Title"
-                value={title}
-                onChangeText={setTitle}
-            />
-            <TextInput
-                style={styles.textArea}
-                placeholder="Post Content"
-                value={content}
-                onChangeText={setContent}
-                multiline
-            />
-            <Button
-                title="Pick an Image from Library"
-                onPress={() => selectImage(true)}
-            />
-            <Button title="Take a Photo" onPress={() => selectImage(false)} />
-            <Button
-                title="Create Post"
-                onPress={handleCreatePost}
-                disabled={isLoading}
-            />
-            {isLoading && <Text>Creating post...</Text>}
-        </View>
+        <ScrollView className="flex-1 bg-white">
+            <View className="p-6">
+                <Text className="text-3xl font-bold mb-6 text-gray-800">
+                    Create Post
+                </Text>
+
+                <TouchableOpacity
+                    onPress={selectImage}
+                    className="mb-6 items-center"
+                >
+                    {image ? (
+                        <Image
+                            source={{ uri: image.uri }}
+                            className="w-[300px] h-[225px] rounded-md"
+                        />
+                    ) : (
+                        <View className="w-[300px] h-[225px] bg-gray-200 rounded-md items-center justify-center">
+                            <Text className="text-gray-500">
+                                Tap to add an image
+                            </Text>
+                        </View>
+                    )}
+                </TouchableOpacity>
+
+                {/* Camera button below the placeholder image */}
+                <TouchableOpacity
+                    onPress={() => selectImage(false)} // Trigger the camera
+                    className="bg-blue-500 py-2 px-4 rounded-md mb-4"
+                >
+                    <Text className="text-white text-center">Take a Photo</Text>
+                </TouchableOpacity>
+
+                <View className="mb-4">
+                    <Text className="text-sm font-medium text-gray-700 mb-2">
+                        Title
+                    </Text>
+                    <TextInput
+                        placeholder="Enter post title"
+                        value={title}
+                        onChangeText={setTitle}
+                        className="p-4 border border-gray-300 rounded-md text-gray-900"
+                    />
+                </View>
+
+                <View className="mb-6">
+                    <Text className="text-sm font-medium text-gray-700 mb-2">
+                        Description
+                    </Text>
+                    <TextInput
+                        placeholder="Enter post description"
+                        value={content}
+                        onChangeText={setContent}
+                        multiline
+                        numberOfLines={4}
+                        className="p-4 border border-gray-300 rounded-md text-gray-900"
+                    />
+                </View>
+
+                <TouchableOpacity
+                    onPress={handleCreatePost}
+                    className="bg-blue-500 py-3 px-4 rounded-md"
+                >
+                    <Text className="text-white text-center font-semibold">
+                        Create Post
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 16,
-        backgroundColor: "white",
-    },
-    header: {
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 16,
-    },
-    image: {
-        width: 300,
-        height: 300,
-        marginVertical: 10,
-        resizeMode: "cover",
-    },
-    input: {
-        width: "100%",
-        padding: 12,
-        borderWidth: 1,
-        borderColor: "#d1d5db",
-        borderRadius: 8,
-        marginBottom: 12,
-        fontSize: 16,
-    },
-    textArea: {
-        width: "100%",
-        padding: 12,
-        borderWidth: 1,
-        borderColor: "#d1d5db",
-        borderRadius: 8,
-        marginBottom: 16,
-        fontSize: 16,
-        height: 120,
-        textAlignVertical: "top",
-    },
-});
 
 export default CreatePost;

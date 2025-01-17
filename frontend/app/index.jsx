@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, ScrollView } from "react-native";
 import Post from "@/components/Post"; // Assuming you have the Post component
 import api from "./api";
+import { router } from "expo-router";
 
 const Index = () => {
     const [posts, setPosts] = useState([]); // Initialize posts state
@@ -11,8 +12,15 @@ const Index = () => {
     const fetchPosts = async () => {
         setLoading(true); // Start loading
         try {
-            const res = await api.get("/api/posts");
-            setPosts(res.data); // Assuming response contains the posts data
+            const res = await api.get("http://10.0.2.2:8000/api/posts");
+            console.log(res.data);
+            const sortedPosts = res.data.sort((a, b) => {
+                // Assuming each post has a 'created_at' field with date strings
+                const dateA = new Date(a.created_at);
+                const dateB = new Date(b.created_at);
+                return dateB - dateA; // Sort in descending order (newest first)
+            });
+            setPosts(sortedPosts); // Update state with sorted posts
         } catch (error) {
             console.error("Error fetching posts:", error);
         } finally {
@@ -22,8 +30,9 @@ const Index = () => {
 
     // Remove a post by its ID
     const removePost = async (id) => {
+        console.log(id);
         try {
-            await api.delete(`/api/posts/${id}`); // Correctly format URL with dynamic ID
+            await api.delete(`http://10.0.2.2:8000/api/posts/${id}`); // Correctly format URL with dynamic ID
             fetchPosts(); // Refresh posts after deletion
         } catch (error) {
             console.error("Error deleting post:", error);
@@ -37,8 +46,7 @@ const Index = () => {
 
     // Handle editing a post (implement as needed)
     const handleEdit = (id) => {
-        console.log(`Edit post with ID: ${id}`);
-        // Implement navigation to edit screen or logic to edit post
+        router.push(`/${id}`); // Navigate to the EditPost page with the post ID
     };
 
     return (

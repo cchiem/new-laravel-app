@@ -22,7 +22,7 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::post('/posts', [PostController::class, 'store']);
 
 // Get a specific post by ID (show)
-Route::get('/posts/{post}', [PostController::class, 'show']);
+Route::get('/posts/{postid}', [PostController::class, 'show']);
 
 // Update a specific post by ID (update)
 Route::put('/posts/{post}', [PostController::class, 'update']);
