@@ -22,10 +22,10 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::post('/posts', [PostController::class, 'store']);
 
 // Get a specific post by ID (show)
-Route::get('/posts/{postid}', [PostController::class, 'show']);
+Route::get('/posts/{id}', [PostController::class, 'show']);
 
 // Update a specific post by ID (update)
 Route::put('/posts/{post}', [PostController::class, 'update']);
 
 // Delete a specific post by ID (destroy)
-Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+Route::delete('/posts/{id}', [PostController::class, 'destroy']);

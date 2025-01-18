@@ -12,50 +12,25 @@ class PostController extends Controller
 {
     public function index()
     {
-        return Post::all();
+        $posts = Post::all();
+        return response()->json($posts);
     }
     public function store(Request $request)
     {
-        // Validate the request data
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'image' => 'required|file|image|mimes:jpeg,png,jpg,gif|max:2048',
+        $image = $request->file('image');
+        $originalName = $image->getClientOriginalName();
+
+        // Store the image in the 'posts' directory
+        $imagePath = $image->storeAs('posts', $originalName, 'public');
+
+        // Create the new post
+        $post = Post::create([
+            'title' => request('title'),
+            'content' => request('content'),
+            'photo' => Storage::url($imagePath),
         ]);
-    
-        try {
-            // Initialize imagePath to null
-            $imagePath = null;
-    
-            // Handle the image upload if provided
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                
-                // Use the original name of the file
-                $originalName = $image->getClientOriginalName();
-    
-                // Store the image in the 'posts' directory
-                $imagePath = $image->storeAs('posts', $originalName, 'public');
-            }
-    
-            // Create the new post with or without the image
-            $post = Post::create([
-                'title' => $validated['title'],
-                'content' => $validated['content'],
-                'photo' => $imagePath ? Storage::url($imagePath) : null,
-            ]);
-    
-            // Return success response
-            return response()->json([
-                'message' => 'Post created successfully',
-                'post' => $post,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Failed to create post',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+
+        return response()->json($post);
     }
     
     
@@ -65,28 +40,22 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->title = request('title');
         $post->content = request('content');
+        $post->photo = request('photo');
         $post->save();
         return response()->json($post);
     }
 
-    public function show($postid)
+    public function show($id)
     {
-        // Find the post by ID
-        $post = Post::find($postid);
-
-        // If the post is not found, return a 404 response
-        if (!$post) {
-            return response()->json(['message' => 'Post not found'], 404);
-        }
-
-        // Return the post data (you can customize this depending on the response format you need)
+        $post = Post::findOrFail($id);
         return response()->json($post);
     }
 
-    public function destroy(Post $post)
+    public function destroy($id)
     {
+        $post = Post::findOrFail($id);
         $post->delete();
-        return response()->noContent();
+        return response()->json(null, 204);
     }
 }
 

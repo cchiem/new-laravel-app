@@ -13,12 +13,9 @@ const Index = () => {
         setLoading(true); // Start loading
         try {
             const res = await api.get("http://10.0.2.2:8000/api/posts");
-            console.log(res.data);
+            console.log("Posts: ", res.data);
             const sortedPosts = res.data.sort((a, b) => {
-                // Assuming each post has a 'created_at' field with date strings
-                const dateA = new Date(a.created_at);
-                const dateB = new Date(b.created_at);
-                return dateB - dateA; // Sort in descending order (newest first)
+                return b.id - a.id; // (newest first)
             });
             setPosts(sortedPosts); // Update state with sorted posts
         } catch (error) {
@@ -30,8 +27,8 @@ const Index = () => {
 
     // Remove a post by its ID
     const removePost = async (id) => {
-        console.log(id);
         try {
+            console.log("Deleting Post: ", id);
             await api.delete(`http://10.0.2.2:8000/api/posts/${id}`); // Correctly format URL with dynamic ID
             fetchPosts(); // Refresh posts after deletion
         } catch (error) {
@@ -39,19 +36,19 @@ const Index = () => {
         }
     };
 
-    // Fetch posts when component mounts
-    useEffect(() => {
-        fetchPosts();
-    }, []);
-
     // Handle editing a post (implement as needed)
     const handleEdit = (id) => {
         router.push(`/${id}`); // Navigate to the EditPost page with the post ID
     };
 
+    // Fetch posts when component mounts
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
     return (
         <>
-            <Text className="text-5xl font-bold text-center bg-gray-100 py-4">
+            <Text className="text-5xl font-bold text-center bg-gray-100 pt-8 pb-4">
                 Post List
             </Text>
             <ScrollView className="flex-1 bg-gray-100 p-4">
