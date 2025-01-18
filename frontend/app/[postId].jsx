@@ -70,7 +70,7 @@ const EditPost = () => {
         <ScrollView className="flex-1 bg-white">
             <View className="p-6">
                 <Text className="text-3xl font-bold mb-6 text-gray-800">
-                    Edit Post: {post.id}
+                    Edit Post: {post?.id}
                 </Text>
 
                 <View className="mb-6 items-center">

@@ -6,32 +6,26 @@ import "../global.css";
 export default function Layout() {
     return (
         <View className="flex-1 bg-gray-100">
-            {/* Stack Navigator */}
-            <Stack
-                options={{
-                    headerLeft: () => null, // This removes the back button in the header
-                }} // Disable back button on this screen
-            >
+            <Stack>
                 <Stack.Screen name="index" options={{ title: "Home" }} />
                 <Stack.Screen name="create" options={{ title: "Create" }} />
-                <Stack.Screen name="edit" options={{ title: "Edit" }} />
             </Stack>
 
             {/* Modern Navigation Bar */}
-            <View className="flex-row justify-around items-center p-4 bg-[#0000ff]">
+            <View className="flex-row justify-around items-center p-4 border-t border-t-gray-200 bg-white shadow-md">
                 <NavButton
                     label="Home"
                     route="/"
-                    icon={<Ionicons name="home" size={24} color="white" />}
+                    icon={<Ionicons name="home" size={24} color="black" />}
                 />
                 <NavButton
                     label="Create"
-                    route="create"
+                    route="/create"
                     icon={
                         <FontAwesome
                             name="plus-square"
                             size={24}
-                            color="white"
+                            color="black"
                         />
                     }
                 />
@@ -49,7 +43,7 @@ function NavButton({ label, route, icon }) {
             className="flex items-center"
         >
             {icon}
-            <Text className="text-white text-sm mt-1">{label}</Text>
+            <Text className="text-black text-sm mt-1">{label}</Text>
         </TouchableOpacity>
     );
 }
