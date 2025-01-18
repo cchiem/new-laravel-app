@@ -25,7 +25,7 @@ Route::post('/posts', [PostController::class, 'store']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
 
 // Update a specific post by ID (update)
-Route::put('/posts/{post}', [PostController::class, 'update']);
+Route::put('/posts/{id}', [PostController::class, 'update']);
 
 // Delete a specific post by ID (destroy)
 Route::delete('/posts/{id}', [PostController::class, 'destroy']);

@@ -109,7 +109,7 @@ const CreatePost = () => {
             setTitle("");
             setContent("");
             setImage(null);
-            router.push("/?refresh=true"); // Redirect to the home page with a refresh query
+            router.push("/");
         } catch (error) {
             console.error("Error creating post:", error);
             Alert.alert("Error", "An error occurred while creating the post.");
@@ -132,10 +132,10 @@ const CreatePost = () => {
                     {image ? (
                         <Image
                             source={{ uri: image.uri }}
-                            className="w-[300px] h-[225px] rounded-md"
+                            className="w-[300px] h-[300px] rounded-md"
                         />
                     ) : (
-                        <View className="w-[300px] h-[225px] bg-gray-200 rounded-md items-center justify-center">
+                        <View className="w-[300px] h-[300px] bg-gray-200 rounded-md items-center justify-center border-dashed border-gray-300 border-2">
                             <Text className="text-gray-500">
                                 Tap to add an image
                             </Text>

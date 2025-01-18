@@ -40,7 +40,6 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
         $post->title = request('title');
         $post->content = request('content');
-        $post->photo = request('photo');
         $post->save();
         return response()->json($post);
     }
@@ -54,7 +53,18 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+    
+        // (remove `/storage/` prefix)
+        $photoPath = str_replace('/storage/', '', $post->photo);
+    
+        // Check if the file exists and delete it
+        if (Storage::disk('public')->exists($photoPath)) {
+            Storage::disk('public')->delete($photoPath);
+        }
+    
+        // Delete the post
         $post->delete();
+    
         return response()->json(null, 204);
     }
 }

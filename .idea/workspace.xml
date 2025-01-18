@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4eed4a5-9be2-486e-a05e-dd881f7418a7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/PostController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/PostController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/api.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/app/[postId].jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/[postId].jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/create.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/create.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
